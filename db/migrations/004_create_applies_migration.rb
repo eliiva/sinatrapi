@@ -1,6 +1,6 @@
 Sequel.migration do
   change do
-    create_table!(:jobs, :ignore_index_errors=>true) do
+    create_table!(:applies, :ignore_index_errors=>true) do
       primary_key :id
       TrueClass :read, :text => true, :null => false
       TrueClass :invited, :text => true, :null => false

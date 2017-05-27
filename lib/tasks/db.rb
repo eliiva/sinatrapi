@@ -1,6 +1,9 @@
 require 'rake'
 require 'dotenv/tasks'
 
+require 'sequel'
+require 'sequel/extensions/seed'
+
 namespace :db do
 
   require 'sequel'
@@ -47,8 +50,20 @@ namespace :db do
 
   desc "Perform rollback to specified target or full rollback as default"
   task :seed do
-    seed_file = File.join('./seeds.rb')
-    load(seed_file) if File.exist?(seed_file)
+    puts 'seed task running'
+    puts 'Check: schema_seeds to be clean!'
+    Sequel::Seed.setup :development # Set the environment
+    Sequel.extension :seed # Load the extension
+    DB = Sequel.connect(
+        adapter: :postgres,
+        database: 'sinatrapi_development',
+        host: 'localhost',
+        password: 'password',
+        user: 'pgadmin',
+        max_connections: 10,
+    # logger: Logger.new('log/db.log')
+    )
+    Sequel::Seeder.apply(DB, './seeds') # Apply the seeds/fixtures
   end
 
 
